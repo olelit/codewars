@@ -3,20 +3,25 @@ import time
 
 
 def get_count_neighbourhood(field, x, y, empty):
-	count = 0
 	neighbourhood = []
+	steps = [
+        [x + 1, y],
+        [x - 1, y],
+        [x, y + 1],
+        [x, y - 1],
+        [x + 1, y + 1],
+        [x - 1, y - 1],
+        [x + 1, y - 1],
+        [x - 1, y + 1],
+    ]
 
-	start_y = y - 1
-	end_y = y  + 2
-
-	start_x = x - 1
-	end_x = x + 2
-	
-	for sub_y in range(start_y, end_y):
-		for sub_x in range(start_x, end_x):
-			if sub_x >= 0 and sub_y >= 0 and sub_x < len(field[0]) and sub_y < len(field) and (sub_x != x or sub_y != y):
-				if field[sub_y][sub_x] != empty:
-					neighbourhood.append(0)
+	for item in steps:
+		new_x = item[0]
+		new_y = item[1]
+		if 0 <= new_x < len(field) and 0 <= new_y < len(field):
+			if field[new_y][new_x] != empty:
+				neighbourhood.append(0)
+					
 	return len(neighbourhood)
 
 
@@ -55,20 +60,21 @@ def main():
 	beautiful_output(field)
 	generation = 0
 
-	while(generation < 2):
+	while(generation < 10):
 		if generation > 0:
 			field = [[next_generation[y][x] for x in range(len(next_generation[y]))] for y in range(len(next_generation)) ]
 			next_generation = [[empty for x in range(size)] for y in range(size)]
 		for y in range(len(field)):
 			for x in range(len(field[0])):
 				count_neighbourhood = get_count_neighbourhood(field, x, y, empty)
-				if count_neighbourhood == 2:
-					next_generation[y][x] = cell
+				if count_neighbourhood < 2 or count_neighbourhood > 3:
+					next_generation[y][x] = empty					
 				else:
-					next_generation[y][x] = empty
+					next_generation[y][x] = cell
+					
 		generation += 1
 		beautiful_output(next_generation)
-		#time.sleep(1)
+		time.sleep(1)
 	pass
 
 if __name__ == "__main__":
